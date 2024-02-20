@@ -46,7 +46,7 @@ class Bzip2(ModuleBuilder):
 
     @property
     def url(self):
-        return f"https://sourceware.org/pub/bzip2/bzip2-{self.version}.tar.gz"
+        return f"https://github.com/libarchive/bzip2/archive/refs/tags/bzip2-{self.version}.tar.gz"
 
     @property
     def version(self):
