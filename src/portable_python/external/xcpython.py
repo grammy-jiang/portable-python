@@ -355,7 +355,7 @@ class Zlib(ModuleBuilder):
 
     @property
     def url(self):
-        return f"https://zlib.net/fossils/zlib-{self.version}.tar.gz"
+        return f"https://github.com/madler/zlib/releases/download/v{self.version}/zlib-{self.version}.tar.gz"
 
     @property
     def version(self):
