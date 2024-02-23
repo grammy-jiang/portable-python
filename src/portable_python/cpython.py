@@ -315,7 +315,18 @@ class Cpython(PythonBuilder):
 
         folder = self.setup.folders.build_folder / "test-venvs" / folder
         self.run_python(*args, folder)
-        self._do_run(folder / "bin/pip", "--version")
+        self._do_run(
+            folder / "bin/pip",
+            "--version",
+            env={
+                "LD_LIBRARY_PATH": ":".join(
+                    [
+                        str(self.setup.folders.build_folder / str(self.version) / "lib"),
+                        os.environ.get("LD_LIBRARY_PATH", ""),
+                    ]
+                )
+            },
+        )
 
     def _validate_venv_module(self):
         """Verify that the freshly compiled python can create venvs without issue"""
