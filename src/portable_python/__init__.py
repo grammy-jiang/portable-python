@@ -617,7 +617,7 @@ class ModuleBuilder:
                     https_proxy = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
                     if https_proxy:
                         proxies["https"] = https_proxy
-                    RestClient().download(self.url, path, proxies=proxies)
+                    RestClient().download(self.url, path, proxies=proxies, verify=False)
 
                 runez.decompress(path, self.m_src_build, simplify=True)
 
