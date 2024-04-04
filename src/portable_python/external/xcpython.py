@@ -21,7 +21,7 @@ class Bdb(ModuleBuilder):
 
     @property
     def url(self):
-        return f"https://ftp.osuosl.org/pub/blfs/conglomeration/db/db-{self.version}.tar.gz"
+        return f"http://download.oracle.com/berkeley-db/db-{self.version}.tar.gz"
 
     @property
     def version(self):
