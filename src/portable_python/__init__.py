@@ -534,9 +534,9 @@ class ModuleBuilder:
         yield from os.environ.get("LD_LIBRARY_PATH", "").split(":")
 
     def xenv_PKG_CONFIG_PATH(self):
-        yield from os.environ.get("PKG_CONFIG_PATH", "").split(":")
         if self.modules.selected:
             yield f"{self.deps_lib}/pkgconfig"
+        yield from os.environ.get("PKG_CONFIG_PATH", "").split(":")
 
     def _do_run(self, program, *args, fatal=True, env=None):
         logger = self._log_handler
