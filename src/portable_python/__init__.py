@@ -15,6 +15,7 @@ import multiprocessing
 import os
 import pathlib
 import re
+from itertools import chain
 from typing import ClassVar, List
 
 import runez
@@ -510,6 +511,10 @@ class ModuleBuilder:
     def deps_lib(self):
         return self.deps / "lib"
 
+    @property
+    def deps_lib64(self):
+        return self.deps / "lib64"
+
     def xenv_CPATH(self):
         folder = self.deps / "include"
         if folder.exists():
@@ -523,6 +528,7 @@ class ModuleBuilder:
     def xenv_LDFLAGS(self):
         if self.modules.selected:
             yield f"-L{self.deps_lib}"
+            yield f"-L{self.deps_lib64}"
 
     def xenv_PATH(self):
         yield f"{self.deps}/bin"
@@ -537,6 +543,7 @@ class ModuleBuilder:
         yield from os.environ.get("PKG_CONFIG_PATH", "").split(":")
         if self.modules.selected:
             yield f"{self.deps_lib}/pkgconfig"
+            yield f"{self.deps_lib64}/pkgconfig"
 
     def _do_run(self, program, *args, fatal=True, env=None):
         logger = self._log_handler
@@ -746,7 +753,7 @@ class PythonBuilder(ModuleBuilder):
         # Some libs get funky permissions for some reason
         super()._prepare()
         self.setup.ensure_clean_folder(self.install_folder)
-        for path in runez.ls_dir(self.deps_lib):
+        for path in chain(runez.ls_dir(self.deps_lib), runez.ls_dir(self.deps_lib64)):
             if not path.name.endswith(".la"):
                 expected = 0o755 if path.is_dir() else 0o644
                 current = path.stat().st_mode & 0o777

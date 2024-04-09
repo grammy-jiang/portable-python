@@ -108,10 +108,11 @@ class Cpython(PythonBuilder):
 
     def xenv_LDFLAGS_NODIST(self):
         yield f"-L{self.deps_lib}"
+        yield f"-L{self.deps_lib64}"
         if PPG.target.is_linux:
             yield "-Wl,-z,origin"
             # rpath intentionally long to give 'patchelf' some room
-            yield f"-Wl,-rpath={self.c_configure_prefix}/lib:{self.c_configure_prefix}/lib64"
+            yield f"-Wl,-rpath={self.c_configure_prefix}/lib,-rpath={self.c_configure_prefix}/lib64"
 
     def has_configure_opt(self, name, *variants):
         opts = self.c_configure_args_from_config
@@ -139,7 +140,7 @@ class Cpython(PythonBuilder):
 
         if not self.has_configure_opt("--with-system-ffi"):
             if self.active_module(LibFFI):
-                yield f"LIBFFI_INCLUDEDIR={self.deps_lib}"
+                yield f"LIBFFI_INCLUDEDIR={self.deps_lib64}"
                 yield "--with-system-ffi=no"
 
             else:
@@ -163,7 +164,7 @@ class Cpython(PythonBuilder):
             # TODO: this doesn't seem to be enough, on macos cpython's ./configure still picks up the shared macos tcl/tk libs
             version = Version(tkinter.version)
             yield f"--with-tcltk-includes=-I{self.deps}/include"
-            yield f"--with-tcltk-libs=-L{self.deps_lib} -ltcl{version.mm} -ltk{version.mm}"
+            yield f"--with-tcltk-libs=-L{self.deps_lib} -L{self.deps_lib64} -ltcl{version.mm} -ltk{version.mm}"
 
     @runez.cached_property
     def prefix_lib_folder(self):
